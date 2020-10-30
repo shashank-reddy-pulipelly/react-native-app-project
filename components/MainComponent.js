@@ -6,13 +6,15 @@ import Dishdetail from './DishdetailComponent';
 import Contact from './ContactComponent';
 import About from './AboutComponent';
 import Home from './HomeComponent';
+import Favorites from './FavoriteComponent';
+
 import React,{Component} from 'react';
 import { StyleSheet, Text, View,ScrollView, SafeAreaView,Image} from 'react-native';
 import { Icon } from 'react-native-elements';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { connect } from 'react-redux';
 import { fetchDishes, fetchComments, fetchPromos, fetchLeaders } from '../redux/ActionCreators';
-
+import Reservation from './ReservationComponent';
 const mapStateToProps = state => {
   return {
     dishes: state.dishes,
@@ -112,6 +114,40 @@ const MenuNavigator = createStackNavigator(screens,
         })   
     });
 
+    const ReservationNavigator = createStackNavigator({
+      Reservation: { screen: Reservation }
+    }, {
+      defaultNavigationOptions: ({ navigation }) => ({
+        headerStyle: {
+            backgroundColor: "#512DA8"
+        },
+        headerTitleStyle: {
+            color: "#fff"            
+        },
+        headerTintColor: "#fff",
+        headerLeft: ()=>{
+          return(<MaterialIcons name="menu" size={28} color="white"
+          onPress={ () => navigation.toggleDrawer() } style={styles.icon} />)
+        }    
+      })
+    })
+    const FavoritesNavigator = createStackNavigator({
+      Favorites: { screen: Favorites }
+    }, {
+      defaultNavigationOptions: ({ navigation }) => ({
+        headerStyle: {
+            backgroundColor: "#512DA8"
+        },
+        headerTitleStyle: {
+            color: "#fff"            
+        },
+        headerTintColor: "#fff",
+        headerLeft: ()=>{
+          return(<MaterialIcons name="menu" size={28} color="white"
+          onPress={ () => navigation.toggleDrawer() } style={styles.icon} />)
+        }  
+      })
+    })
     const CustomDrawerContentComponent = (props) => (
         <ScrollView>
           <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
@@ -189,6 +225,36 @@ const MenuNavigator = createStackNavigator(screens,
                     />
                   ),
               }, 
+            },
+            Favorites:
+            { screen: FavoritesNavigator,
+              navigationOptions: {
+                title: 'My Favorites',
+                drawerLabel: 'My Favorites',
+                drawerIcon: ({ tintColor, focused }) => (
+                  <Icon
+                    name='heart'
+                    type='font-awesome'            
+                    size={24}
+                    iconStyle={{ color: tintColor }}
+                  />
+                ),
+              }
+            },
+            Reservation:
+            { screen: ReservationNavigator,
+              navigationOptions: {
+                title: 'Reserve Table',
+                drawerLabel: 'Reserve Table',
+                drawerIcon: ({ tintColor, focused }) => (
+                  <Icon
+                    name='cutlery'
+                    type='font-awesome'            
+                    size={24}
+                    iconStyle={{ color: tintColor }}
+                  />
+                ),
+              }
             }
     }, {
         
