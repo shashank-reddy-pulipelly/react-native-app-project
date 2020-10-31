@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { Text, View, ScrollView
-    , StyleSheet, Alert, Picker, Switch, Button, Modal } from 'react-native';
+    , StyleSheet, Alert, Picker, Switch, Button,Platform, Modal } from 'react-native';
 import { Card } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker'
 import * as Animatable from 'react-native-animatable';
+import * as Calendar from 'expo-calendar';
+import * as Permissions from 'expo-permissions';
+import * as Notifications from 'expo-notifications';
 class Reservation extends Component {
 
     constructor(props) {
@@ -16,7 +19,47 @@ class Reservation extends Component {
             showModal: false
         }
     }
+  
+    obtainCalendarPermission=async ()=>{
+        let permission = await Permissions.askAsync(Permissions.CALENDAR)
+        return permission;
+    }
+    async addReservationToCalendar(date){
+        await this.obtainCalendarPermission();
+        const defaultCalendarSource =
+        Platform.OS === 'ios'
+          ? await getDefaultCalendarSource()
+          : { isLocalAccount: true, name: 'Expo Calendar' };
+      const newCalendarID = await Calendar.createCalendarAsync({
+        title: 'Expo Calendar',
+        color: 'blue',
+        entityType: Calendar.EntityTypes.EVENT,
+        sourceId: defaultCalendarSource.id,
+        source: defaultCalendarSource,
+        name: 'internalCalendarName',
+        ownerAccount: 'personal',
+        accessLevel: Calendar.CalendarAccessLevel.OWNER,
+      });
+      console.log(`Your new calendar ID is: ${newCalendarID}`);
 
+        var eventid= await Calendar.createEventAsync(newCalendarID,{
+            startDate:  new Date(Date.parse(date)),
+            endDate: new Date(Date.parse(date)+2*60*60*1000),
+            title: "Con Fusion Table Reservation",
+            timeZone: "GMT+5.5",
+            location:'121, Clear Water Bay Road, Clear Water Bay, Kowloon, Hong Kong'
+         
+          })
+          .then( event => {
+            console.log('success',event);
+              })
+        .catch( error => {
+            console.log('failure',error);
+            });
+        
+    }
+  
+  
     static navigationOptions = {
         title: 'Reserve Table',
     };
@@ -41,6 +84,7 @@ class Reservation extends Component {
                 {
                     text: 'OK',
                     onPress: () =>{
+                        this.addReservationToCalendar(this.state.date)
                         this.resetForm();
                     }
                 }

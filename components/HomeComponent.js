@@ -72,7 +72,7 @@ class Home extends Component {
           this.animatedValue,
           {
             toValue: 8,
-            duration: 10000,
+            duration: 8000,
             easing: Easing.linear,
             useNativeDriver: true 
           }

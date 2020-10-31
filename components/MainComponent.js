@@ -7,14 +7,16 @@ import Contact from './ContactComponent';
 import About from './AboutComponent';
 import Home from './HomeComponent';
 import Favorites from './FavoriteComponent';
-
+import Login from './LoginComponent';
 import React,{Component} from 'react';
-import { StyleSheet, Text, View,ScrollView, SafeAreaView,Image} from 'react-native';
+import { StyleSheet,ToastAndroid, Text, View,ScrollView, SafeAreaView,Image} from 'react-native';
 import { Icon } from 'react-native-elements';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { connect } from 'react-redux';
 import { fetchDishes, fetchComments, fetchPromos, fetchLeaders } from '../redux/ActionCreators';
 import Reservation from './ReservationComponent';
+import NetInfo from '@react-native-community/netinfo';
+
 const mapStateToProps = state => {
   return {
     dishes: state.dishes,
@@ -31,7 +33,23 @@ const mapDispatchToProps = dispatch => ({
   fetchLeaders: () => dispatch(fetchLeaders()),
 })
 
-
+const LoginNavigator = createStackNavigator({
+  Login: { screen: Login }
+}, {
+  defaultNavigationOptions: ({ navigation }) => ({
+  headerStyle: {
+      backgroundColor: "#512DA8"
+  },
+  headerTitleStyle: {
+      color: "#fff"            
+  },
+  headerTintColor: "#fff",
+  headerLeft: ()=>{
+    return(<MaterialIcons name="menu" size={28} color="white"
+    onPress={ () => navigation.toggleDrawer() } style={styles.icon} />)
+  }
+})
+});
 const screens={
     Menu:{
         screen:Menu,
@@ -164,6 +182,21 @@ const MenuNavigator = createStackNavigator(screens,
         </ScrollView>
       );
     const MainNavigator = createDrawerNavigator({
+      Login: 
+      { screen: LoginNavigator,
+        navigationOptions: {
+          title: 'Login',
+          drawerLabel: 'Login',
+          drawerIcon: ({ tintColor, focused }) => (
+            <Icon
+              name='sign-in'
+              type='font-awesome'            
+              size={24}
+              iconStyle={{ color: tintColor }}
+            />
+          ),
+        }
+      },
         Home: 
           { screen: HomeNavigator,
             navigationOptions: {
@@ -257,7 +290,7 @@ const MenuNavigator = createStackNavigator(screens,
               }
             }
     }, {
-        
+      initialRouteName: 'Home',
       drawerBackgroundColor: '#D1C4E9',
       contentComponent: CustomDrawerContentComponent
     });
@@ -273,6 +306,70 @@ const Container= createAppContainer(MainNavigator);
     this.props.fetchComments();
     this.props.fetchPromos();
     this.props.fetchLeaders();
+  NetInfo.fetch()
+    .then((connectionInfo) => {
+        ToastAndroid.show('Initial Network Connectivity Type: '
+            + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType,
+            ToastAndroid.LONG)
+    });
+
+NetInfo.addEventListener((connectionInfo)=>{ 
+  switch (connectionInfo.type) {
+    case 'none':
+      ToastAndroid.show('You are now offline!', ToastAndroid.LONG);
+      break;
+    case 'wifi':
+      ToastAndroid.show('You are now connected to WiFi!', ToastAndroid.LONG);
+      break;
+    case 'cellular':
+      ToastAndroid.show('You are now connected to Cellular!', ToastAndroid.LONG);
+      break;
+    case 'unknown':
+      ToastAndroid.show('You now have unknown connection!', ToastAndroid.LONG);
+      break;
+    default:
+      break;
+  }
+});
+  }
+  componentWillUnmount() {
+    NetInfo.removeEventListener((connectionInfo)=>{ 
+      switch (connectionInfo.type) {
+        case 'none':
+          ToastAndroid.show('You are now offline!', ToastAndroid.LONG);
+          break;
+        case 'wifi':
+          ToastAndroid.show('You are now connected to WiFi!', ToastAndroid.LONG);
+          break;
+        case 'cellular':
+          ToastAndroid.show('You are now connected to Cellular!', ToastAndroid.LONG);
+          break;
+        case 'unknown':
+          ToastAndroid.show('You now have unknown connection!', ToastAndroid.LONG);
+          break;
+        default:
+          break;
+      }
+    });
+  }
+  
+  handleConnectivityChange = (connectionInfo) => {
+    switch (connectionInfo.type) {
+      case 'none':
+        ToastAndroid.show('You are now offline!', ToastAndroid.LONG);
+        break;
+      case 'wifi':
+        ToastAndroid.show('You are now connected to WiFi!', ToastAndroid.LONG);
+        break;
+      case 'cellular':
+        ToastAndroid.show('You are now connected to Cellular!', ToastAndroid.LONG);
+        break;
+      case 'unknown':
+        ToastAndroid.show('You now have unknown connection!', ToastAndroid.LONG);
+        break;
+      default:
+        break;
+    }
   }
   render(){
    
