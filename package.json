@@ -1,4 +1,5 @@
 {
+  "name":"react-native-app-2",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start ",

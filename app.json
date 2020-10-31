@@ -1,5 +1,6 @@
 {
   "expo": {
+    "sdkVersion": "39.0.0",
     "name": "react-native-app-2",
     "slug": "react-native-app-2",
     "version": "1.0.0",
@@ -16,11 +17,10 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
+   
+    "android": {
+      "package": "com.yourcompany.yourappname",
+      "versionCode": 1
     }
   }
 }
