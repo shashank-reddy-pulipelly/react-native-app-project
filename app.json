@@ -19,8 +19,14 @@
     ],
    
     "android": {
-      "package": "com.yourcompany.yourappname",
+      "package": "com.mobiFood",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCm4WI_YsMBwvSecfRURTrgGoAynwrk5cs"
+        }
+      },
       "versionCode": 1
+      
     }
   }
 }
